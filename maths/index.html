@@ -377,7 +377,6 @@
                 .single()).data;
               if (!data) throw new Error('Keine Daten');
             } catch (err) {
-              // ein zweiter Versuch
               try {
                 data = (await supabase
                   .from('Hausaufgaben')
