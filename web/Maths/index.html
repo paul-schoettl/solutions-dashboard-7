@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arbeitsheft Lösungen</title>
+    <title>Mathe Lösungen</title>
     <link rel="icon" href="icon.png">
     <style>
         body {
@@ -12,7 +12,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #8e0101, #ff0101);
+            background: linear-gradient(to right, #0171b7, #009dff);
         }
 
         .container {
@@ -161,17 +161,17 @@
             <a style="background-color: gray; padding: 10px 20px; border-radius: 20px; color: blue;" href="https://solutions-dashboard-7.netlify.app">Zurück</a>
         </div>
     </div>
-    <button onclick="window.location = 'https://solutions-dashboard-7.netlify.app'" style="position: fixed; width: 10%; left: 1%; top: 1%; height: fit-content; aspect-ratio:unset; cursor: pointer; background: none; border: none;"><img style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; border: none; box-shadow: none;" src="arrow-left.png" alt=""></button>
+    <button onclick="window.location = 'https://solutions-dashboard-7.netlify.app'" style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; cursor: pointer; background: none; border: none;"><img style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; border: none; box-shadow: none;" src="arrow-left.png" alt=""></button>
     <div id="loadingOverlay" style="display: none;">
         <div class="spinner"></div>
     </div>
     <div class="container" id="container">
-        <h1>Workbook Lösungen</h1>
+        <h1>Mathe Lösungen</h1>
         <div class="switcher">
             <button style="height: 100%; background-color: rgba(255, 255, 255, 0.2);">Alle Lösungen</button>
-            <button onclick="tohomework()">Aktuelle Hausaufgaben!</button>
+            <button onclick="tohomework()">Aktuelle Hausaufgabe(n)</button>
         </div>
-        <img id="workbookImage" src="pictures/1.webp" alt="Workbook Seite 1">
+        <img id="workbookImage" src=" " alt="Workbook Seite 1">
         <div class="buttons">
             <button id="prevButton" onclick="changePage(-1)" disabled>
                 <span><img src="arrow-left.png" alt="Zurück"></span>
@@ -180,7 +180,8 @@
                 <span><img src="arrow-right.png" alt="Weiter"></span>
             </button>
         </div>
-        <p id="pageNumber" style="margin: 5px;">Seite 1 von 16</p>
+        <p id="pageNumber" style="margin: 5px;">Seite 1 von 60
+        </p>
         <div class="manual-navigation">
             <input class="normal" style="width: 20%;" type="number" id="pageInput" min="1" max="77"
                 placeholder="Seite eingeben">
@@ -189,22 +190,33 @@
                 onclick="goToPage()">Wechseln</button>
         </div>
     </div>
-
     <script>
         function tohomework() {
-            window.location.href = "https://german-homework-workbook.netlify.app/";
+            window.location.href = "../maths/index.html";
         }
 
-        const totalPages = 16;
+        const totalPages = 60;
         let currentPage = 1;
         const preloadedImages = [];
         let imageElement, pageNumberElement, prevButton, nextButton;
 
         function preloadImages() {
             const preloadRange = 4;
+            // Zuerst currentPage immer preladen
+            if (!preloadedImages[currentPage]) {
+                const img = new Image();
+                img.src = `pictures/${currentPage}.webp`;
+                preloadedImages[currentPage] = img;
+            }
+            // Dann die restlichen Seiten im Bereich preladen
             for (let i = -preloadRange; i <= preloadRange; i++) {
                 const pageToPreload = currentPage + i;
-                if (pageToPreload > 0 && pageToPreload <= totalPages) {
+                if (
+                    pageToPreload > 0 &&
+                    pageToPreload <= totalPages &&
+                    pageToPreload !== currentPage && // currentPage wurde schon oben behandelt
+                    !preloadedImages[pageToPreload]
+                ) {
                     const img = new Image();
                     img.src = `pictures/${pageToPreload}.webp`;
                     preloadedImages[pageToPreload] = img; // Speichere das Bild im Array
@@ -216,9 +228,8 @@
             const pageInput = document.getElementById('pageInput');
             const pageNumber = parseInt(pageInput.value, 10);
 
-            if (!isNaN(pageNumber) && pageNumber >= 3 && pageNumber <= totalPages) {
+            if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPages) {
                 currentPage = pageNumber;
-                preloadImages(); // Lade die Bilder vorab
                 updatePage(); // Aktualisiere die Seite sofort
             } else {
                 alert(`Bitte eine gültige Seitennummer zwischen 1 und ${totalPages} eingeben.`);
@@ -234,6 +245,7 @@
         }
 
         function updatePage() {
+            preloadImages();
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.style.display = 'flex'; // Zeige das Lade-Overlay an
 
@@ -243,31 +255,51 @@
                 const tempImage = new Image();
                 tempImage.src = preloadedImage.src;
 
-                tempImage.onload = () => {
+                if (tempImage.complete) {
                     imageElement.src = tempImage.src;
                     imageElement.alt = `Workbook Seite ${currentPage}`;
                     pageNumberElement.textContent = `Seite ${currentPage} von ${totalPages}`;
 
                     prevButton.disabled = currentPage === 1;
+                    prevButton.style.opacity = currentPage === 1 ? "0.5" : "1";
                     nextButton.disabled = currentPage === totalPages;
+                    nextButton.style.opacity = currentPage === totalPages ? "0.5" : "1";
 
-                    loadingOverlay.style.display = 'none'; // Verstecke das Lade-Overlay
-                };
+                    loadingOverlay.style.display = 'none';
+                } else {
+                    tempImage.onload = () => {
+                        imageElement.src = tempImage.src;
+                        imageElement.alt = `Workbook Seite ${currentPage}`;
+                        pageNumberElement.textContent = `Seite ${currentPage} von ${totalPages}`;
+
+                        prevButton.disabled = currentPage === 1;
+                        prevButton.style.opacity = currentPage === 1 ? "0.5" : "1";
+                        nextButton.disabled = currentPage === totalPages;
+                        nextButton.style.opacity = currentPage === totalPages ? "0.5" : "1";
+
+                        loadingOverlay.style.display = 'none';
+                    };
+                }
             } else {
                 loadingOverlay.style.display = 'none'; // Verstecke das Lade-Overlay, falls kein Bild vorhanden ist
             }
-            preloadImages()
+
+            // Lade die Bilder vorab, nachdem die aktuelle Seite aktualisiert wurde
+            preloadImages();
         }
 
         function changePage(direction) {
-            currentPage += direction;
-            updatePage();
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                updatePage();
+            }
         }
 
         window.onload = () => {
+            initializeElements(); // Initialisiere DOM-Elemente
             updatePage(); // Zeige die erste Seite
             preloadImages(); // Lade alle Bilder vorab
-            initializeElements(); // Initialisiere DOM-Elemente
         };
     </script>
 </body>

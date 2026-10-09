@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workbook Lösungen</title>
+    <title>Arbeitsheft Lösungen</title>
     <link rel="icon" href="icon.png">
     <style>
         body {
@@ -12,7 +12,7 @@
             text-align: center;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #068e01, #0aff02);
+            background: linear-gradient(to right, #8e0101, #ff0101);
         }
 
         .container {
@@ -84,6 +84,37 @@
             padding: 5px;
         }
 
+        .switcher {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            width: 350px;
+            left: 50%;
+            transform: translate(-50%);
+            background-color: rgb(112, 112, 112);
+            border-radius: 50px;
+            height: 50px;
+        }
+
+        .switcher button {
+            position: relative;
+            flex: 1;
+            color: white;
+            text-align: center;
+            margin: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .switcher button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
         #workbookImage {
             border-radius: 30px;
         }
@@ -130,13 +161,17 @@
             <a style="background-color: gray; padding: 10px 20px; border-radius: 20px; color: blue;" href="https://solutions-dashboard-7.netlify.app">Zurück</a>
         </div>
     </div>
-    <button onclick="window.location = 'https://solutions-dashboard-7.netlify.app'" style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; cursor: pointer; background: none; border: none;"><img style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; border: none; box-shadow: none;" src="arrow-left.png" alt=""></button>
+    <button onclick="window.location = 'https://solutions-dashboard-7.netlify.app'" style="position: fixed; width: 10%; left: 1%; top: 1%; height: fit-content; aspect-ratio:unset; cursor: pointer; background: none; border: none;"><img style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; border: none; box-shadow: none;" src="arrow-left.png" alt=""></button>
     <div id="loadingOverlay" style="display: none;">
         <div class="spinner"></div>
     </div>
     <div class="container" id="container">
-        <h1 id="title">Workbook Lösungen</h1>
-        <img id="workbookImage" src="pictures/1.jpg" alt="Workbook Seite 1">
+        <h1>Workbook Lösungen</h1>
+        <div class="switcher">
+            <button style="height: 100%; background-color: rgba(255, 255, 255, 0.2);">Alle Lösungen</button>
+            <button onclick="tohomework()">Aktuelle Hausaufgaben!</button>
+        </div>
+        <img id="workbookImage" src="pictures/1.webp" alt="Workbook Seite 1">
         <div class="buttons">
             <button id="prevButton" onclick="changePage(-1)" disabled>
                 <span><img src="arrow-left.png" alt="Zurück"></span>
@@ -145,7 +180,7 @@
                 <span><img src="arrow-right.png" alt="Weiter"></span>
             </button>
         </div>
-        <p id="pageNumber" style="margin: 5px;">Seite 3 von 77</p>
+        <p id="pageNumber" style="margin: 5px;">Seite 1 von 16</p>
         <div class="manual-navigation">
             <input class="normal" style="width: 20%;" type="number" id="pageInput" min="1" max="77"
                 placeholder="Seite eingeben">
@@ -157,10 +192,10 @@
 
     <script>
         function tohomework() {
-            window.location.href = "https://englisch-homework-workbook.netlify.app";
+            window.location.href = "../german/index.html";
         }
 
-        const totalPages = 77;
+        const totalPages = 16;
         let currentPage = 1;
         const preloadedImages = [];
         let imageElement, pageNumberElement, prevButton, nextButton;
@@ -171,7 +206,7 @@
                 const pageToPreload = currentPage + i;
                 if (pageToPreload > 0 && pageToPreload <= totalPages) {
                     const img = new Image();
-                    img.src = `pictures/${pageToPreload}.JPG`;
+                    img.src = `pictures/${pageToPreload}.webp`;
                     preloadedImages[pageToPreload] = img; // Speichere das Bild im Array
                 }
             }
@@ -182,7 +217,7 @@
             const pageNumber = parseInt(pageInput.value, 10);
 
             if (!isNaN(pageNumber) && pageNumber >= 3 && pageNumber <= totalPages) {
-                currentPage = pageNumber - 2;
+                currentPage = pageNumber;
                 preloadImages(); // Lade die Bilder vorab
                 updatePage(); // Aktualisiere die Seite sofort
             } else {
@@ -211,7 +246,7 @@
                 tempImage.onload = () => {
                     imageElement.src = tempImage.src;
                     imageElement.alt = `Workbook Seite ${currentPage}`;
-                    pageNumberElement.textContent = `Seite ${currentPage + 2} von ${totalPages}`;
+                    pageNumberElement.textContent = `Seite ${currentPage} von ${totalPages}`;
 
                     prevButton.disabled = currentPage === 1;
                     nextButton.disabled = currentPage === totalPages;

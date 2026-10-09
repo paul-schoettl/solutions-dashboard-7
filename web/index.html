@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link rel="icon" href="icon.png" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="Files/style.css">
+    <script src="Files/Default/Initemailjs.js"></script>
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    <script src="Files/Default/Chatbot.js"></script>
+    <meta name="google-site-verification" content="1aTQskq8WGI2dKHzTrsfXzXzpibQ-splCo6KtK7MkTs" />
+</head>
+
+<body>
+    <div id="archiv-banner"
+        style="background:#7c2d12; color:#fff; padding:14px 20px; text-align:center; font-family:'Franklin Gothic Medium','Arial Narrow',Arial,sans-serif; font-size:1.05em; line-height:1.5; border-bottom:3px solid #f59e0b;">
+        <strong>⚠️ Diese Website ist archiviert.</strong> Das Backend ist abgeschaltet und nicht mehr
+        funktionsfähig &mdash; es werden keine neuen Hausaufgaben oder Lösungen mehr geladen. Die Seiten bleiben
+        nur noch als Archiv erreichbar.
+    </div>
+    <div id="cookie-banner" class="hidden">
+        <p style="width: 100%; font-size: 27px;">Wir verwenden Cookies, um Einstellungen zu speichern. Durch die Nutzung
+            meiner Website stimmst du der
+            Verwendung von Cookies (Speicherungen) zu.</p>
+        <button id="accept-cookies">Einverstanden</button>
+    </div>
+    <div id="maintenance-frame"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,1); color:white; z-index:999999; align-items:center; justify-content:center; flex-direction:column; font-size:2em;">
+        <div style="width: 100%; text-align: center;">
+            <h1 style="width: 100%;; font-size:xx-large">⚠️ Wartungsarbeiten</h1>
+            <p style="width: 100%;">Aktuell finden Wartungsarbeiten statt!</p>
+            <p style="width: 100%;">Vorraussichtliche Dauer: <span id="time-ws"></span></p>
+            <p style="width: 100%;">Grund: <span id="why-ws"></span></p>
+        </div>
+    </div>
+    <div class="container"></div>
+    <div id="login-container" style="display: none">
+        <h2>Anmelden</h2>
+        <p style="margin: 0 0 12px 0; font-size: 0.95em;">Keine Zugangsdaten nötig &ndash; einfach auf
+            <strong>Anmelden</strong> klicken.</p>
+        <form id="login-form">
+            <label for="username">Nutzername:</label>
+            <input type="text" id="username" autocomplete="on" style="text-align: center" />
+            <label for="password">Passwort:</label>
+            <div style="position: relative">
+                <input onfocus="showeye()" style="text-align: center" type="password" id="password" />
+                <button id="eye" type="button" onclick="togglePasswordVisibility()" style="
+              position: absolute;
+              right: 10px;
+              top: 50%;
+              transform: translateY(-70%);
+              background: none;
+              border: none;
+              cursor: pointer;
+              padding: 0;
+              margin: 0;
+              display: none;
+              font-size: 30px;
+            ">
+                    👁️
+                </button>
+            </div>
+            <button type="submit">Anmelden</button>
+        </form>
+    </div>
+    <img src="icon.png" alt="" class="starterimg" id="starterimg" />
+    <div class="dashboard">
+        <h1 style="animation: colorchange 2s ease-in-out">
+            Hallo <span id="usname"></span>
+        </h1>
+        <div class="link-container" id="link-container">
+            <h3 id="english"><u>Englisch Workbook Lösungen</u></h3>
+            <a id="access-all" href="English/index.html"><span>Alle Lösungen</span></a>
+            <a id="access-others" href="English-Others/index.html"><span>Alle Lösungen</span></a>
+            <h3 id="maths"><u>Mathe Lösungen</u></h3>
+            <a id="access-all-maths" href="Maths/index.html"><span>Alle Lösungen</span></a>
+            <a id="access-others-maths" href="Maths-Others/index.html"><span>Alle Lösungen</span></a>
+            <h3 id="german"><u>Deutsch Arbeitsheft Lösungen</u></h3>
+            <a id="access-german" href="German/index.html"><span>Alle Lösungen</span></a>
+            <a id="access-german-others" href="German-Others/index.html"><span>Alle Lösungen</span></a>
+            <h3 id="vocabularies"><u>Vokablen</u></h3>
+            <a id="access-latin" href="Latein/index.html"><span>Latein Vokabeln</span></a>
+            <h3 id="homeworks"><u>Hausaufgaben Lösungen</u></h3>
+            <a id="access-homework-english" href="../english/index.html"><span>Englisch
+                    Hausaufgaben</span></a>
+            <a id="access-homework-maths" href="../maths/index.html"><span>Mathe
+                    Hausaufgaben</span></a>
+            <a id="access-homework-german" href="../german/index.html"><span>Deutsch
+                    Hausaufgaben</span></a>
+            <h3 id="info-text"><u>Üben</u></h3>
+            <a id="access-info" href="https://info-ueben-html.netlify.app/" style="display: block"><span>Informatik HTML
+                    üben</span></a>
+            <h3 id="device-infos-text"><u>Geräte Informationen</u></h3>
+            <a href="https://device-information-paluss1122.netlify.app" id="device-infos"><span>Geräte Infos</span></a>
+            <h3 id="games-website-text"><u>Spiele</u></h3>
+            <a href="https://games-paluss1122.netlify.app/" id="games-website"><span>Spiele</span></a>
+        </div>
+    </div>
+    <button id="abmelden" class="abmelden" onclick="logout()">Abmelden</button>
+    <!--<button id="openuserdatachangeframe" class="abmelden" onclick="usernameframe()" style="top: 50px">
+        Zugangsdaten Ändern
+    </button>-->
+    <!--<button class="shop" onclick="shop()" id="shopbt" style="transform: scale(1)">
+        <img src="shop.png" class="shopimg" alt="shop image" />-->
+    <div id="bg" style="width: 100%; height: 100%; background-color: black; position: fixed; top: 0; opacity: 0;"></div>
+    </button>
+    <button class="shop" onclick="contactframe()" id="contact"
+        style="transform: scale(1); position: fixed; bottom: 105px; right: 0">
+        <img src="contact.png" class="shopimg" alt="contact image" />
+    </button>
+    <button class="settings" onclick="settings()" id="shopbt" style="transform: scale(1)">
+        <img src="settings.png" class="shopimg" alt="settings image" />
+    </button>
+    <div id="shopframe" style="display: none" class="shopframe">
+        <div id="mathsshop" class="offer">
+            <h4 style="margin-top: 0">Mathe Lösungen</h4>
+            <span style="color: red">Preis:</span> 40cent einmalig!
+        </div>
+        <div id="englishshop" class="offer">
+            <h4 style="margin-top: 0">Englisch Workbook Lösungen</h4>
+            <span style="color: red">Preis:</span> 10cent einmalig!
+        </div>
+        <div id="germanshop" class="offer">
+            <h4 style="margin-top: 0">Deutsch Arbeitsheft Lösungen</h4>
+            <span style="color: red">Preis:</span> 10cent einmalig!
+        </div>
+        <p id="allbuyed" style="
+          position: fixed;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          display: none;
+          font-size: xx-large;
+        ">
+            Alles gekauft! Vielen Dank, dass du mich unterstüzt!
+        </p>
+        <button id="closebtshop" onclick="shop()" style="
+          bottom: 0;
+          left: 50%;
+          transform: translate(-50%);
+          position: fixed;
+          font-size: 30px;
+          background: rgb(181, 181, 181);
+          border: none;
+          border-radius: 30px;
+          cursor: pointer;
+          transform-origin: 0% 100%;
+          transition: all 2s;
+        ">
+            Schließen
+        </button>
+    </div>
+    <div id="settingsframe" style="display: none" class="settingsframe">
+        <div class="offer" style="border-radius: 50px 50px 0px 0px">
+            <h4 style="margin: 0; font-size: 30px"><u>Hintergrund</u></h4>
+            <div class="offer" style="margin: 0; padding-bottom: 0">
+                <button id="blackbg" class="selected"
+                    style="background: linear-gradient(to right, rgb(17, 17, 17), gray)" onclick="changebg('black')">
+                    Schwarz - Grau
+                </button>
+                <button id="bluebg" class="notselected" style="background: linear-gradient(to right, blue, red)"
+                    onclick="changebg('blue')">
+                    Blau - Rot
+                </button>
+                <button id="greenbg" class="notselected" style="
+              background: linear-gradient(to right, Green, Yellow);
+              color: black;
+            " onclick="changebg('green')">
+                    Grün - Gelb
+                </button>
+                <button id="redbg" class="notselected" style="
+              background: linear-gradient(to right, red, orange);
+              color: black;
+            " onclick="changebg('red')">
+                    Rot - Orange
+                </button>
+
+                <button id="lilabg" class="notselected" style="
+                    background: linear-gradient(to right, purple, blue);
+                    color: black;
+                    " onclick="changebg('lila')">
+                    Lila - Blau
+                </button>
+
+                <button id="bluegreenbg" class="notselected" style="
+                    background: linear-gradient(to right, blue, green);
+                    color: black;
+                    " onclick="changebg('bluegreen')">
+                    Blau - Grün
+                </button>
+
+                <button id="greenredbg" class="notselected" style="
+                    background: linear-gradient(to right, green, red);
+                    color: black;
+                    " onclick="changebg('greenred')">
+                    Grün - Rot
+                </button>
+
+                <br>
+
+                <input type="file" id="bgUpload" accept="image/*"
+                    style="margin-top:10px; margin-bottom:10px; width: 100%; font-size: 100%; max-width: 270px;"
+                    title="Background Image Upload" />
+                <img id="bgimagepref" src=" " alt="">
+                <button onclick="removeCustomBg()" id="removeBgBtn" style="display:none; margin-bottom:10px;">Eigenes
+                    Bild entfernen</button>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-direction: column;">
+                    <label for="transparenttoggle" style="font-size: 30px; color: #fff; cursor: pointer;">
+                        Transparentes Dashboard (um Hintergrund besser zu sehen)
+                    </label>
+                    <br>
+                    <span class="switch">
+                        <input type="checkbox" id="transparenttoggle" onchange="transparentdashboard()"
+                            aria-checked="false" aria-label="Transparentes Dashboard aktivieren" role="switch" />
+                        <span class="slider"></span>
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-direction: column;">
+                    <label for="particletoggle" style="font-size: 30px; color: #fff; cursor: pointer;">
+                        Hintergrund Partikel
+                    </label>
+                    <br>
+                    <span class="switch">
+                        <input type="checkbox" id="particletoggle" onchange="changeparticles()"
+                            aria-label="Hintergrund Partikel" role="switch" />
+                        <span class="slider"></span>
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; flex-direction: column;">
+                    <label for="movebgtoggle" style="font-size: 30px; color: #fff; cursor: pointer;">
+                        Bewegender Hintergrund
+                    </label>
+                    <br>
+                    <span class="switch">
+                        <input type="checkbox" id="movebgtoggle" onchange="changemovebg()"
+                            aria-label="Bewegender Hintergrund" role="switch" />
+                        <span class="slider"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px; flex-direction: column;">
+                <label for="animationToggle" style="font-size: 30px; color: #fff; cursor: pointer;">
+                    Animationen
+                </label>
+                <br>
+                <span class="switch">
+                    <input type="checkbox" id="animationToggle" onchange="changeanimations()" aria-label="Animationen"
+                        role="switch" />
+                    <span class="slider"></span>
+                </span>
+            </div>
+            <h4 style="margin-top: 0; font-size: 30px; margin-bottom: 20px">
+                <u>Tutorials</u>
+            </h4>
+            <label class="switch">
+                <input type="checkbox" id="animationToggle2" onchange="changetutorials()" />
+                <span class="slider"></span>
+            </label>
+
+            <h4 style="margin-top: 0; font-size: 30px; margin-bottom: 20px">
+                <u>Websiten anzeigen</u>
+            </h4>
+            <div class="offer" style="display: flex; flex-direction: column; margin: 0; padding: 0">
+                <div class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">Geräte Informationen</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="deviceinformationtoggle"
+                            onchange="linktoggle('device-infos'); linktoggle('device-infos-text')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">Games Website</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="gameswebsitetoggle"
+                            onchange="linktoggle('games-website'); linktoggle('games-website-text')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="info-setting" class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">Info HTML Üben</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="infohtmltoggle"
+                            onchange="linktoggle('access-info'); linktoggle('info-text')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="english-setting" class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">
+                        Englisch Workbook Lösungen
+                    </h2>
+                    <label class="switch">
+                        <input type="checkbox" id="englishworkbooktoggle"
+                            onchange="linktoggle('access-all'); linktoggle('english'); linktoggle('access-others')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="maths-setting" class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">Mathe Lösungen</h2>
+                    <label class="switch">
+                        <input type="checkbox" id="mathstoggle"
+                            onchange="linktoggle('access-all-maths'); linktoggle('maths'); linktoggle('access-others-maths')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="german-setting" class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">
+                        Deutsch Arbeitsheft Lösungen
+                    </h2>
+                    <label class="switch">
+                        <input type="checkbox" id="germantoggle"
+                            onchange="linktoggle('access-german'); linktoggle('german'); linktoggle('access-german-others')" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div id="latin-setting" class="offer" style="
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              margin: 10px;
+              padding: 0;
+            ">
+                    <h2 style="margin: 0; margin-right: 20px">
+                        Latein Vokabeln
+                    </h2>
+                    <label class="switch">
+                        <input type="checkbox" id="latintoggle"
+                            onchange="linktoggle('access-latin'); linktoggle('vocabularies');" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <button onclick="clearls()" style="margin-bottom: 50px">
+                Fehlerbehebung mit Einstellungen + Abmeldung + Einstellungen werden
+                zurückgesetzt
+            </button>
+            <h1>Version: <span id="version"></span></h1>
+        </div>
+        <button id="closebtshop" onclick="settings()" style="
+          bottom: 0;
+          position: fixed;
+          background: none;
+          border: none;
+          border-radius: 30px;
+          cursor: pointer;
+          height: 10%;
+          right: 0;
+          width: 87px;
+          z-index: 100000000000;
+        ">
+            <img src="green-arrow.webp" alt="" class="green-arrow" style="z-index: 100000000000" />
+        </button>
+    </div>
+    <div id="userdatachangeframe" style="display: none" class="settingsframe">
+        <div class="offer" style="margin-bottom: 20px; width: 50%">
+            <h1><u>Nutzername ändern</u></h1>
+            <input type="text" id="newusername" placeholder="Neuen Nutzername hier eingeben" style="width: 50%"
+                title="Insert new username" />
+            <br />
+            <button class="apply" style="transform: scale(1); border: none; background-color: red"
+                onclick="changeuserdata('username')">
+                Neuen Nutzernamen Bestätigen
+            </button>
+        </div>
+        <div class="offer" style="margin-bottom: 20px; width: 50%">
+            <h1><u>Passwort ändern</u></h1>
+            <input type="text" id="newuserpassword" placeholder="Neues Password hier eingeben" style="width: 50%"
+                id="newpassword" title="Insert new password" />
+            <br />
+            <button class="apply" style="transform: scale(1); border: none; background-color: red"
+                onclick="changeuserdata('password')">
+                Neues Passwort Bestätigen
+            </button>
+        </div>
+        <button id="closebtshop" onclick="usernameframe()" style="
+          bottom: 0;
+          left: 50%;
+          transform: translate(-50%);
+          position: fixed;
+          font-size: 30px;
+          background: rgb(181, 181, 181);
+          border: none;
+          border-radius: 30px;
+          cursor: pointer;
+          transform-origin: 0% 100%;
+          transition: all 2s;
+          padding: 10px;
+        ">
+            Schließen
+        </button>
+    </div>
+    <div id="contactframe" style="display: none" class="settingsframe">
+        <div class="offer"
+            style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin: 0;"><u>Kontakt</u></h1>
+            <p style="font-size: 30px;">Email Adresse: <a style="color: lightblue;"
+                    href="mailto:paluss1122@gmail.com">Paluss1122@gmail.com</a></p>
+            <div style="background-color: gray; width: 80%; height: 2px; border-radius: 20px;"></div>
+            <p style="font-size: 30px;">Website Inhaber: Paul S.</p>
+            <div style="background-color: gray; width: 80%; height: 2px; border-radius: 20px;"></div>
+            <p style="font-size: 30px;">Copyright © Paluss1122 Solutions Dashboard 7</p>
+        </div>
+        <div class="offer"
+            style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin: 0;"><u>Datennutzung (gemäß § 5 TMG)</u></h1>
+            <p style="font-size: 30px;">Diese Website nutzt Cookies, um Einstellungen zu speichern.</p>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Es werden folgende Daten an <a
+                    style="color: lightblue;" href="https://www.simpleanalytics.com" target="_blank">Simple
+                    Analytics</a> übermittelt:
+            </p>
+            <ul style="text-align: left; font-family: Arial, Helvetica, sans-serif;">
+                <li>Verwendeter Browser</li>
+                <li>Gerätetyp (Smartphone oder Desktop)</li>
+                <li>Herkunftsland</li>
+            </ul>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Es werden folgende Daten von <a
+                    style="color: lightblue;" href="https://firebase.google.com" target="_blank">Firebase (Google)</a>
+                geladen:
+            </p>
+            <ul style="text-align: left; font-family: Arial, Helvetica, sans-serif;">
+                <li>Wartungsarbeiten Zustand</li>
+                <li>Wartungsarbeiten Dauer</li>
+                <li>Version</li>
+            </ul>
+            <p>Es werden nur hier genannte Daten an Dritte übermittelt. Alle anderen Daten bleiben Lokal auf deinem
+                Gerät</p>
+        </div>
+        <a style="width: 210px; height: 50px; display: block;"
+            href="https://dashboard.simpleanalytics.com/?utm_source=solutions-dashboard-7.netlify.app&utm_content=badge&affiliate=defeb"
+            referrerpolicy="origin" target="_blank">
+            <picture style="width: 210px; height: 50px; display: block;">
+                <source srcset="https://simpleanalyticsbadges.com/solutions-dashboard-7.netlify.app?mode=dark"
+                    media="(prefers-color-scheme: dark)" />
+                <img src="https://simpleanalyticsbadges.com/solutions-dashboard-7.netlify.app?mode=light" loading="lazy"
+                    referrerpolicy="no-referrer" crossorigin="anonymous" alt="Simple Analytics Badge" />
+            </picture>
+        </a>
+        <div class="offer"
+            style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin: 0;"><u>Datenspeicherung (gemäß TTDSG & DSGVO, gemäß DSGVO Art. 12 ff.)</u></h1>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Alle Hochgeladenen Bilder werden nur lokal auf deinem
+                Gerät gespeichert und werden an NIEMANDEM weitergegeben.</p>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Folgende Einstellungen werden im <a
+                    style="color: lightblue;" href="https://de.wikipedia.org/wiki/Web_Storage" target="_blank">Lokal
+                    Storage</a> gespeichert</p>
+            <ul style="text-align: left; font-family: Arial, Helvetica, sans-serif;">
+                <li>Ausgewählter Hintergrund (Farbverlauf + Eigenes Hochgeladenes Bild)</li>
+                <li>Alle anderen Einstellungen</li>
+                <li>Deine Nutzername</li>
+                <li>Berechtigungen</li>
+                <li>ob du in der 7C bist</li>
+                <li>ob du Tutorials abgeschlossen hast</li>
+            </ul>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Alle gennanten lokalen gespeicherten Daten werden
+                solange gespeichert bis du manuell deinen Browser (Cache) leerst.</p>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Bei Wechsel des Browser oder des Gerätes werden
+                gespeicherte Daten nicht übertragen</p>
+        </div>
+        <div class="offer"
+            style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin: 0;"><u>Jugendschutz</u></h1>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Diese Website ist für Kinder und Jugendliche geeignet.
+            </p>
+            <p style="font-family: Arial, Helvetica, sans-serif; margin: 0;">Es werden keine Inhalte veröffentlicht die
+                gegen den Jugendschutz verstoßen.</p>
+        </div>
+        <div class="offer"
+            style="margin-bottom: 70px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
+            <h1 style="margin: 0;"><u>Weiteres</u></h1>
+            <p style="font-size: 1.5em;"><u>Hausaufgaben Bilder Speicherung</u></p>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Bilder für die aktuelle Hausaufgaben der 7C werden von
+                einem eigenen Server abgerufen und werden permanent bei <a style="color: lightblue;"
+                    href="https://supabase.com" target="_blank">Supabase</a> gespeichert
+            </p>
+            <p style="font-size: 1.5em;"><u>KI Assistent / Chatbot</u></p>
+            <p style="font-family: Arial, Helvetica, sans-serif;">Der Chatbot, der nur auf einzelnen Seiten zu sehen
+                ist, wird von <a style="color: lightblue;" href="https://www.chatbase.co" target="_blank">Chatbase</a>
+                gehostet! Chats werden teilweise gespeichert! Gebe keinen privaten Informationen ein, da hinter dem
+                System ChatGpt 4.0 steckt, was sensible Daten auch mit verarbeitet!
+            </p>
+        </div>
+        <button id="closebtcontact" onclick="contactframe()" style="
+      bottom: 0;
+      left: 50%;
+      transform: translate(-50%);
+      position: fixed;
+      font-size: 30px;
+      background: rgb(181, 181, 181);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transform-origin: 0% 100%;
+      transition: all 2s;
+      padding: 10px;    
+    ">
+            Schließen
+        </button>
+    </div>
+    <div id="tut"></div>
+    <div id="black"></div>
+    <div id="hinweis-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); color:white; z-index:9999999; align-items:center; justify-content:center; flex-direction:column; font-size:2em;">
+        <div style="width: 100%; text-align: center; max-width: 900px; margin:auto;">
+            <h1 style="margin-bottom: 20px;font-size: 1.5em;">⚠️ Wichtiger Hinweis</h1>
+            <p style="font-size:1em; margin-bottom: 30px; width: 100%;">Diese Website ist archiviert. Das Backend
+                ist abgeschaltet und nicht mehr funktionsfähig, es werden keine neuen Lösungen mehr angezeigt. <br><br>
+                Diese Änderung betrifft alle Fächer und Bereiche außer Latein Vokabeln, Games Website & Geräte
+                Informationen.</p>
+            <button id="hinweis-verstanden"
+                style="font-size: 1em; padding: 10px 30px; border-radius: 20px; border: none; background: #4caf50; color: white; cursor: pointer;">Verstanden</button>
+        </div>
+    </div>
+    <!-- /Hinweis-Overlay -->
+    <script type="module" src="Files/Scripts/Module/1.js"></script>
+    <script src="Files/Default/main.js"></script>
+    <script>
+        const auszublendendeIDs = [
+            "english",
+            "access-all",
+            "access-others",
+            "maths",
+            "access-all-maths",
+            "access-others-maths",
+            "german",
+            "access-german",
+            "homeworks",
+            "access-homework-english",
+            "access-homework-maths",
+            "access-homework-german",
+            "info-text",
+            "access-info",
+            "german-setting",
+            "maths-setting",
+            "english-setting",
+            "info-setting"
+        ];
+
+        auszublendendeIDs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let user = null;
+            try {
+                const userStr = window.localStorage.getItem('loggedInUser_Paluss1122_sdb');
+                if (userStr) {
+                    user = JSON.parse(userStr);
+                }
+            } catch (e) {
+                user = null;
+            }
+            const username = user && user.username ? user.username : null;
+            if (username) {
+                const links = [
+                    document.getElementById('access-homework-english'),
+                    document.getElementById('access-homework-maths'),
+                    document.getElementById('access-homework-german')
+                ];
+                links.forEach(link => {
+                    if (link) {
+                        link.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const url = link.href.split('#')[0] + '#' + encodeURIComponent(username);
+                            window.open(url, '_blank');
+                        });
+                    }
+                });
+            }
+
+            if (!window.localStorage.getItem('hinweis_angezeigt')) {
+                var overlay = document.getElementById('hinweis-overlay');
+                if (overlay) overlay.style.display = 'flex';
+                var btn = document.getElementById('hinweis-verstanden');
+                if (btn) {
+                    btn.onclick = function () {
+                        overlay.style.display = 'none';
+                        window.localStorage.setItem('hinweis_angezeigt', 'true');
+                    };
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hausaufgaben Lösungen Mathe</title>
+    <link rel="icon" href="icon.png">
+    <style>
+        body {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #0171b7, #009dff);
+        }
+
+        .container {
+            margin: 20px auto;
+            max-width: 800px;
+            position: relative;
+        }
+
+        img {
+            height: auto;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .switcher {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            width: 350px;
+            left: 50%;
+            transform: translate(-50%);
+            background-color: rgb(112, 112, 112);
+            border-radius: 50px;
+            height: 50px;
+        }
+
+        .switcher button {
+            position: relative;
+            flex: 1;
+            color: white;
+            text-align: center;
+            margin: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            height: 100%;
+            transition: all 0.5s ease;
+            border-radius: 50px 0px 0px 50px;
+        }
+
+        .switcher button:last-child {
+            border-radius: 0px 50px 50px 0px;
+        }
+
+        .switcher button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #workbookImage,
+        #old-homework-picture {
+            border-radius: 30px;
+            position: relative;
+            width: 90%;
+            margin-bottom: 10px;
+            background: transparent;
+        }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .normal {
+            font-size: 17px;
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            text-align: center;
+            border-radius: 10px;
+            border: none;
+            background-color: #ffffff;
+            color: black;
+            padding: 5px;
+        }
+
+        .notification-settings {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            color: white;
+            text-align: left;
+            width: 90%;
+            max-width: 600px;
+            margin-left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .notification-settings h4 {
+            margin-bottom: 15px;
+            color: #0aff02;
+        }
+
+        .notification-row {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-row label {
+            font-size: 18px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .notification-row input[type="radio"] {
+            accent-color: #808080;
+            width: 18px;
+            height: 18px;
+        }
+
+        .notification-settings button {
+            background-color: #0aff02;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .notification-settings button:hover {
+            background-color: #00c800;
+        }
+    </style>
+    <!--KI Chatbot-->
+    <script>
+        (function () {
+            if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+                window.chatbase = (...args) => {
+                    if (!window.chatbase.q) { window.chatbase.q = [] }
+                    window.chatbase.q.push(args)
+                };
+                window.chatbase = new Proxy(window.chatbase, {
+                    get(target, prop) {
+                        if (prop === "q") { return target.q }
+                        return (...args) => target(prop, ...args)
+                    }
+                })
+            }
+            const onLoad = function () {
+                const script = document.createElement("script");
+                script.src = "https://www.chatbase.co/embed.min.js";
+                script.id = "eWuN3g6RdpWvEffhIdOy5";
+                script.domain = "www.chatbase.co";
+                document.body.appendChild(script)
+            };
+            if (document.readyState === "complete") {
+                onLoad()
+            } else {
+                window.addEventListener("load", onLoad)
+            }
+        })();
+    </script>
+    <!-- EmailJS v4 korrekt einbinden (ohne type="module") -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        emailjs.init("al7zV42qlXcTUFbck");
+    </script>
+</head>
+
+<body>
+    <div id="archiv-banner"
+        style="background:#7c2d12; color:#fff; padding:14px 20px; text-align:center; font-family:'Franklin Gothic Medium','Arial Narrow',Arial,sans-serif; font-size:1.05em; line-height:1.5; border-bottom:3px solid #f59e0b;">
+        <strong>⚠️ Diese Website ist archiviert.</strong> Das Backend ist abgeschaltet und nicht mehr
+        funktionsfähig &mdash; es werden keine neuen Hausaufgaben oder Lösungen mehr geladen. Die Seiten bleiben
+        nur noch als Archiv erreichbar.
+    </div>
+    <div id="maintenance-frame"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,1); color:white; z-index:999999; align-items:center; justify-content:center; flex-direction:column; font-size:2em;">
+        <div style="width: 100%; text-align: center;">
+            <h1 style="width: 100%; font-size:xx-large">⚠️ Wartungsarbeiten</h1>
+            <p style="width: 100%;">Aktuell finden Wartungsarbeiten statt!</p>
+            <p style="width: 100%;">Vorraussichtliche Dauer: <span id="time-ws"></span></p>
+            <p style="width: 100%;">Grund: <span id="why-ws"></span></p>
+        </div>
+    </div>
+    <div id="nameOverlay"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
+        <div
+            style="background:white; border-radius:20px; padding:30px; max-width:350px; text-align:center; box-shadow:0 0 20px #000;">
+            <h2>Möchtest du deinen Vornamen angeben?</h2>
+            <input id="userNameInput" type="text" placeholder="Dein Name (optional)"
+                style="margin:10px 0; width:90%; padding:8px; border-radius:8px; border:1px solid #ccc;" />
+            <div style="margin-top:20px;">
+                <button id="submitNameBtn" class="normal" style="cursor: pointer;">Abschließen</button>
+                <button id="noThanksBtn" class="normal" style="margin-left:10px; cursor: pointer;">Nein, danke</button>
+            </div>
+            <p style="font-size:12px; color:#888; margin-top:10px;">Dein Name wird nur für Statistik-Zwecke gespeichert.
+            </p>
+        </div>
+    </div>
+    <div id="loadingOverlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+    <div class="container" id="container">
+        <h1>Mathe Hausaufgaben Lösungen</h1>
+        <div class="switcher">
+            <button style="height: 100%; background-color: rgba(255, 255, 255, 0.2);">Aktuelle Hausaufgaben
+            </button>
+            <button onclick="toall()">Dashboard</button>
+        </div>
+        <h1>Aktuell (<span id="date"></span>):</h1>
+        <div class="notification-settings offer">
+            <h4><u>Benachrichtigungen</u></h4>
+            <div class="notification-row">
+                <label>Empfangen:</label>
+                <div class="notif-options">
+                    <label>
+                        <input type="radio" name="notif-setting" value="never" checked>
+                        Nie
+                    </label>
+                    <label>
+                        <input type="radio" name="notif-setting" value="homework">
+                        Alle Hausaufgaben
+                    </label>
+                </div>
+            </div>
+            <button onclick="saveNotificationPreference()">Speichern</button>
+            <div id="notify-status" style="margin-bottom: 10px; color: red; font-size: 20px;"></div>
+        </div>
+        <h1 id="homework"></h1>
+        <div id="pictures">
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+        import { supabaseUrl, supabaseKey } from './config.js';
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        window.supabaseUrl = supabaseUrl;
+        window.supabaseKey = supabaseKey;
+        window.supabase = supabase;
+
+        // Wartungsarbeiten-Frame Logik (wie im Dashboard, aber mit Supabase)
+        const maintenanceFrame = document.getElementById('maintenance-frame');
+        const timeWs = document.getElementById('time-ws');
+        const whyWs = document.getElementById('why-ws');
+
+        async function checkMaintenance() {
+            const { data, error } = await supabase
+                .from('general')
+                .select('*')
+                .eq('id', 'general')
+                .single();
+            if (error || !data) {
+                maintenanceFrame.style.display = 'none';
+                document.body.style.overflow = '';
+                return;
+            }
+            if (data.Wartungsarbeiten) {
+                maintenanceFrame.style.display = 'flex';
+                timeWs.innerText = data.WartungsarbeitenZeit || '-';
+                whyWs.innerText = data.Grund || '-';
+                document.body.style.overflow = 'hidden';
+                document.title = `Wartungsarbeiten (bis ${data.WartungsarbeitenZeit || '-'})`;
+            } else {
+                maintenanceFrame.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+        checkMaintenance();
+        setInterval(checkMaintenance, 5000);
+
+        window.onload = function () {
+            const element = document.querySelector('[value="never"]');
+            const element2 = document.querySelector('[value="homework"]');
+            const pref = localStorage.getItem('notifyPref');
+            if (!pref || pref === 'never') {
+                element.checked = true;
+            } else {
+                element2.checked = true;
+            }
+        }
+
+        window.saveNotificationPreference = async function () {
+            document.getElementById('notify-status').innerText = "Benachrichtigungen sind abgeschaltet.";
+            return
+            if (localStorage.getItem('notifyPref') == document.querySelector('input[name="notif-setting"]:checked').value) {
+                document.getElementById('notify-status').innerText = "Einstellungen übernommen!";
+                setTimeout(() => {
+                    document.getElementById('notify-status').innerText = " ";
+                }, 3000);
+                return
+            }
+            const pref = document.querySelector('input[name="notif-setting"]:checked').value;
+            localStorage.setItem('notifyPref', pref);
+
+            if (pref === "never") {
+                document.getElementById('notify-status').innerText = "Benachrichtigungen deaktiviert.";
+                emailjs.send("service_kulm5f9", "template_ynnizjt", {
+                    token: localStorage.getItem('notifyPref'),
+                    pref: pref,
+                    website: "Mathe"
+                })
+                    .then(function (response) {
+                        document.getElementById('notify-status').innerText = "Erfolg, wird innerhalb der nächsten 24h funktionieren!";
+                    }, function (error) {
+                        document.getElementById('notify-status').innerText = "Fehler beim E-Mail-Versand.";
+                    });
+                return;
+            }
+
+            try {
+                let token;
+                let registration;
+                try {
+                    registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+                } catch (err) {
+                    document.getElementById('notify-status').innerText = "Service Worker konnte nicht registriert werden. Bitte lade die Seite neu oder prüfe die Browser-Einstellungen.";
+                    return;
+                }
+                try {
+                    token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
+                } catch (err) {
+                    document.getElementById('notify-status').innerText = "Fehler beim Abrufen des Benachrichtigungstokens. Bitte erlaube Benachrichtigungen im Browser.";
+                    return;
+                }
+                if (!token) {
+                    document.getElementById('notify-status').innerText = "Konnte kein Benachrichtigungstoken erhalten. Bitte erlaube Benachrichtigungen im Browser.";
+                    return;
+                }
+                localStorage.setItem('token', token);
+                emailjs.send("service_kulm5f9", "template_ynnizjt", {
+                    token: token,
+                    pref: pref,
+                    website: "Mathe"
+                })
+                    .then(function (response) {
+                        document.getElementById('notify-status').innerText = "Erfolg, wird innerhalb der nächsten 24h funktionieren!";
+                    }, function (error) {
+                        document.getElementById('notify-status').innerText = "Fehler beim E-Mail-Versand.";
+                    });
+            } catch (err) {
+                document.getElementById('notify-status').innerText = "Fehler beim Aktivieren der Benachrichtigungen.";
+            }
+        }
+
+        // Notification-Settings Logik mit Radios
+        function saveNotificationPreference() {
+            const value = document.querySelector('input[name="notif-setting"]:checked').value;
+            localStorage.setItem('notificationSetting', value);
+            const status = document.getElementById('notify-status');
+            status.textContent = 'Benachrichtigungseinstellung gespeichert: ' + (value === 'never' ? 'Nie' : 'Nur Hausaufgaben');
+            status.style.color = '#0aff02';
+            setTimeout(() => status.textContent = '', 2000);
+        }
+    </script>
+
+    <!--Bilder Laden-->
+    <script type="module">
+        import { createClient } from 'https://esm.sh/@supabase/supabase-js'
+
+        const bucket = 'bilder'
+        const folder = 'Mathe'
+
+        async function loadImages() {
+            const { data, error } = await supabase
+                .storage
+                .from(bucket)
+                .list(folder, {
+                    limit: 100,
+                    offset: 0,
+                    sortBy: { column: 'name', order: 'asc' }
+                })
+
+            const gallery = document.getElementById('pictures')
+
+            if (error) {
+                console.error('Fehler beim Laden:', error)
+                gallery.innerHTML = '<p>Fehler beim Laden der Bilder.</p>'
+                return
+            }
+
+            data.forEach(file => {
+                if (file.name === '.emptyFolderPlaceholder' || file.name === 'emptyfolderplaceholder') return; // ausblenden
+                const publicUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${folder}/${file.name}`
+                const img = document.createElement('img')
+                img.src = publicUrl
+                img.alt = file.name
+                img.id = 'workbookImage'
+                gallery.appendChild(img)
+            })
+        }
+
+        window.update = async function () {
+            const dateElem = document.getElementById("date");
+            const homeworkElem = document.getElementById("homework");
+
+            dateElem.innerText = "Wird geladen...";
+            homeworkElem.innerText = "Wird geladen...";
+
+            const { data, error } = await supabase
+                .from('Hausaufgaben')
+                .select('*')
+                .eq('id', 'general')
+                .single();
+
+            if (error || !data) {
+                homeworkElem.innerText = "Daten nicht gefunden! Fehler wurde automatisiert gemeldet!";
+                dateElem.innerText = "-";
+                // Fehlerbericht in Supabase speichern
+                await supabase.from('Fehlerberichte').insert([{
+                    typ: 'Dokument nicht gefunden',
+                    ort: 'Hausaufgaben/hausaufgaben',
+                    zeit: new Date().toISOString(),
+                    userAgent: navigator.userAgent
+                }]);
+                return;
+            }
+
+            homeworkElem.innerText = data.Mathe || "Keine Hausaufgabe";
+            dateElem.innerText = data.MatheDatum || "-";
+            document.title = `${data.MatheDatum || ""} - Hausaufgaben Lösungen`;
+            if (data.Mathe == "NICHTS!") {
+                const gallery = document.getElementById('pictures');
+                const imgSrc = "https://xmyszcahhvgcrwjyqdsq.supabase.co/storage/v1/object/public/bilder/Generell/41S-5Y8WjdL._SL500_.jpg";
+                const alreadyExists = !!gallery.querySelector(`img#workbookImage[src="${imgSrc}"]`);
+                if (!alreadyExists) {
+                    const img = document.createElement('img');
+                    img.src = imgSrc;
+                    img.alt = " ";
+                    img.id = 'workbookImage';
+                    gallery.appendChild(img);
+                }
+            }
+        }
+
+        loadImages()
+
+        function getBrowserName() {
+            const userAgent = navigator.userAgent;
+
+            if (userAgent.includes('Firefox')) return 'Firefox';
+            if (userAgent.includes('Chrome')) return 'Chrome';
+            if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
+            if (userAgent.includes('Edge')) return 'Edge';
+            if (userAgent.includes('Opera')) return 'Opera';
+            if (userAgent.includes('Trident')) return 'Internet Explorer';
+
+            return 'Unknown';
+        }
+        window.getBrowserName = getBrowserName; // <-- Fix: Attach to window
+
+        function getBrowserVersion() {
+            const userAgent = navigator.userAgent;
+            let match;
+
+            // Chrome
+            if ((match = userAgent.match(/Chrome\/(\d+)/))) {
+                return match[1];
+            }
+            // Firefox
+            if ((match = userAgent.match(/Firefox\/(\d+)/))) {
+                return match[1];
+            }
+            // Safari
+            if ((match = userAgent.match(/Version\/(\d+).*Safari/))) {
+                return match[1];
+            }
+            // Edge
+            if ((match = userAgent.match(/Edge\/(\d+)/))) {
+                return match[1];
+            }
+
+            return 'Unknown';
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const dateElem = document.getElementById("date");
+            const homeworkElem = document.getElementById("homework");
+
+            dateElem.innerText = "Wird geladen...";
+            homeworkElem.innerText = "Wird geladen...";
+
+            const nameOverlay = document.getElementById('nameOverlay');
+            const userNameInput = document.getElementById('userNameInput');
+            const submitNameBtn = document.getElementById('submitNameBtn');
+            const noThanksBtn = document.getElementById('noThanksBtn');
+
+            const NAME_KEY = 'analyticsUserName';
+            const NAME_DECLINED_KEY = 'analyticsUserNameDeclined';
+
+            function showNameOverlay() {
+                nameOverlay.style.display = 'flex';
+            }
+            function hideNameOverlay() {
+                nameOverlay.style.display = 'none';
+            }
+
+            // Prüfe, ob ein Name im URL-Hash steht
+            const hashName = decodeURIComponent(window.location.hash.replace(/^#/, '').trim());
+            if (hashName) {
+                localStorage.setItem(NAME_KEY, hashName);
+                nameOverlay.style.display = 'none';
+                sendAnalytics(hashName);
+            } else {
+                // Prüfen ob Name oder Ablehnung im localStorage
+                const storedName = localStorage.getItem(NAME_KEY);
+                const declined = localStorage.getItem(NAME_DECLINED_KEY);
+                if (!storedName && !declined) {
+                    // Frame anzeigen, wenn noch keine Entscheidung getroffen wurde
+                    showNameOverlay();
+                }
+            }
+
+            submitNameBtn.onclick = function () {
+                const name = userNameInput.value.trim();
+                if (name) {
+                    localStorage.setItem(NAME_KEY, name);
+                }
+                hideNameOverlay();
+                sendAnalytics(name || null);
+            };
+
+            noThanksBtn.onclick = function () {
+                localStorage.setItem(NAME_DECLINED_KEY, '1');
+                hideNameOverlay();
+                sendAnalytics(null);
+            };
+
+            // Analytics nur senden, wenn Name/Entscheidung getroffen wurde
+            function sendAnalytics(name) {
+                const getBrowserName = window.getBrowserName || (() => 'Unknown');
+                if (
+                    !window.location.href.startsWith("http://127.0.0.1") &&
+                    !window.location.href.startsWith("https://127.0.0.1") &&
+                    !(typeof name === "string" && name.toLowerCase() === "paul")
+                ) {
+                    supabase.from('analytics').insert({
+                        browser: getBrowserName(),
+                        device: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
+                        zeit: new Date().toISOString(),
+                        link: window.location.href,
+                        name: name
+                    })
+                }
+            }
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const storedName = localStorage.getItem(NAME_KEY);
+                const declined = localStorage.getItem(NAME_DECLINED_KEY);
+                if (storedName || declined) {
+                    sendAnalytics(storedName || null);
+                }
+            });
+
+            update();
+            setInterval(update, 5000);
+        })
+    </script>
+    <script>
+        function toall() {
+            window.location.href = "https://solutions-dashboard-7.netlify.app";
+        }
+    </script>
+</body>
+
+</html>

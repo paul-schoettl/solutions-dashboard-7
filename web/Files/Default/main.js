@@ -288,202 +288,13 @@ function togglePasswordVisibility() {
 }
 
 let users = [{
-    "username": "Paluss1122",
-    "password": "mathe",
+    "username": "Archiv",
+    "password": "",
     "is7c": true,
     "boughtEnglish": true,
     "boughtMaths": true,
     "boughtGerman": true,
     "boughtlatin": true
-},
-{
-    "username": "flau11",
-    "password": "flau=cool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "hoffiman13",
-    "password": "hoff=mann!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Kricy13",
-    "password": "krise!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": true
-},
-{
-    "username": "Ludi1",
-    "password": "ichmagreli!",
-    "is7c": false,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": true
-},
-{
-    "username": "Ferdinand2",
-    "password": "ichmaglatein!",
-    "is7c": false,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": true
-},
-{
-    "username": "Ali13",
-    "password": "ichmagfranzösisch!",
-    "is7c": false,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": false
-},
-{
-    "username": "Lorenz13",
-    "password": "ichliebefranzösisch!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Vabi19",
-    "password": "Fußball=cool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": false
-},
-{
-    "username": "Johanna13",
-    "password": "Latein=uncool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": true
-},
-{
-    "username": "Magdalena25",
-    "password": "Latein=uncool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": true
-},
-{
-    "username": "Nicole25",
-    "password": "Französisch=cool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "David12",
-    "password": "französisch=uncool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Fenti12",
-    "password": "französisch=uncool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Saum25",
-    "password": "Samuel24",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Konsti13",
-    "password": "Fußball=cool",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": false
-},
-{
-    "username": "Minos13",
-    "password": "französisch=cool!",
-    "is7c": false,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": false
-},
-{
-    "username": "Jannik12",
-    "password": "latein=cool!",
-    "is7c": false,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": false,
-    "boughtlatin": true
-},
-{
-    "username": "Nina13",
-    "password": "handball=cool!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Emilia13",
-    "password": "Bremser=bester!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
-},
-{
-    "username": "Hanna13",
-    "password": "Geo=super!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": true
-},
-{
-    "username": "Hannah13",
-    "password": "Französisch=super!",
-    "is7c": true,
-    "boughtEnglish": true,
-    "boughtMaths": true,
-    "boughtGerman": true,
-    "boughtlatin": false
 }];
 
 const mathsshop = document.getElementById("mathsshop");
@@ -621,7 +432,7 @@ document
     .addEventListener("submit", function (e) {
         e.preventDefault();
         document.getElementById("password").type = "password";
-        const username = document.getElementById("username").value;
+        const username = document.getElementById("username").value || "Archiv";
         const password = document.getElementById("password").value;
 
         const user = login(username, password);
