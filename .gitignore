@@ -1,0 +1,6 @@
+# Memory-/Agent-Dateien gehören ausschließlich lokal zu den Agents.
+# Niemals committen (siehe AGENTS.md / Git-Hygiene-Regel).
+.claude/
+CLAUDE.md
+AGENTS.md
+.opencode/
