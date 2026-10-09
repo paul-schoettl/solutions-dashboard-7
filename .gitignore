@@ -3,4 +3,5 @@
 .claude/
 CLAUDE.md
 AGENTS.md
-.opencode/
+.opencode/__pycache__/
+node_modules/
