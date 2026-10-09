@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Website-Analytics</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background-color: gray;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat {
+      background: rgb(234, 234, 234);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .visit-entry {
+      border-top: 1px solid #eee;
+      padding-top: 0.5rem;
+      margin-top: 0.5rem;
+      border-bottom: 1px gray solid;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // --- Supabase Konfiguration (Platzhalter, bitte ersetzen!) ---
+    const supabaseUrl = "https://xmyszcahhvgcrwjyqdsq.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhteXN6Y2FoaHZnY3J3anlxZHNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkxNDM0NTksImV4cCI6MjA2NDcxOTQ1OX0.2UIRYj3R_jpS-YhhYud6d5aWfNDrPpK-jy8Vi_HP-ao";
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // --- Firebase Konfiguration ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyBW0WzA9IJoEZ2GuTBMaUoWpOQildKfohU",
+      authDomain: "solutions-dashboard-7-1f6e4.firebaseapp.com",
+      projectId: "solutions-dashboard-7-1f6e4",
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function ladeAlleAnalytics() {
+      const container = document.getElementById("besuche");
+      container.innerHTML = "<p>Lade...</p>";
+
+      // --- Firebase laden ---
+      let firebaseData = [];
+      try {
+        const analyticsCol = collection(db, "analytics");
+        const q = query(analyticsCol, orderBy("zeit", "desc"));
+        const snapshot = await getDocs(q);
+        firebaseData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id, quelle: "Firebase" }));
+      } catch (e) {
+        // Fehler ignorieren, falls Firebase nicht erreichbar
+      }
+
+      // --- Supabase laden ---
+      let supabaseData = [];
+      try {
+        const { data, error } = await supabase
+          .from("analytics")
+          .select("*")
+          .order("zeit", { ascending: false });
+        if (!error && data) {
+          supabaseData = data.map(row => ({ ...row, quelle: "Supabase" }));
+        }
+      } catch (e) {
+        // Fehler ignorieren, falls Supabase nicht erreichbar
+      }
+
+      // --- Zusammenführen & sortieren ---
+      const alle = [...firebaseData, ...supabaseData].filter(e => e.zeit);
+      alle.sort((a, b) => {
+        // Zeit als String oder Timestamp behandeln
+        const ta = Date.parse(a.zeit) || a.zeit;
+        const tb = Date.parse(b.zeit) || b.zeit;
+        return tb - ta;
+      });
+
+      container.innerHTML = "";
+      if (alle.length === 0) {
+        container.innerHTML = "<p>Keine Einträge gefunden.</p>";
+        return;
+      }
+
+      alle.forEach(data => {
+        const div = document.createElement("div");
+        div.className = "visit-entry";
+        div.innerHTML = `
+          <p><strong>ID:</strong> ${data.id || "-"} <span style="font-size:0.9em;color:#888;">(${data.quelle})</span></p>
+          <p>🕓 ${data.zeit || "-"}</p>
+          <p>🧭 Browser: ${data.browser || "-"}</p>
+          <p>📱 Gerät: ${data.device || "-"}</p>
+          <p>🌐 Website: ${data.link || "-"}</p>
+          <p>👤 Zeit: ${data.zeit || "-"}</p>
+          <p>👤 Person: ${data.name || "-"}</p>
+          <p>👤 Aktion: ${data.Action || "-"}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    window.addEventListener("DOMContentLoaded", ladeAlleAnalytics);
+  </script>
+</head>
+
+<body>
+  <h1>📊 Alle Analytics-Einträge</h1>
+  <div class="stat">
+    <h2>Letzte Besuche (Firebase)</h2>
+    <div id="besuche"></div>
+  </div>
+</body>
+
+</html>

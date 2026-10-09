@@ -9,7 +9,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <link rel="stylesheet" href="Files/style.css">
     <script src="Files/Default/Initemailjs.js"></script>
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
     <script src="Files/Default/Chatbot.js"></script>
     <meta name="google-site-verification" content="1aTQskq8WGI2dKHzTrsfXzXzpibQ-splCo6KtK7MkTs" />
 </head>
@@ -39,7 +38,7 @@
     <div class="container"></div>
     <div id="login-container" style="display: none">
         <h2>Anmelden</h2>
-        <p style="margin: 0 0 12px 0; font-size: 0.95em;">Keine Zugangsdaten nötig &ndash; einfach auf
+        <p style="margin: 0 0 12px 0; font-size: 0.95em; color: white">Keine Zugangsdaten nötig &ndash; einfach auf
             <strong>Anmelden</strong> klicken.</p>
         <form id="login-form">
             <label for="username">Nutzername:</label>
@@ -447,17 +446,8 @@
             style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
             <h1 style="margin: 0;"><u>Datennutzung (gemäß § 5 TMG)</u></h1>
             <p style="font-size: 30px;">Diese Website nutzt Cookies, um Einstellungen zu speichern.</p>
-            <p style="font-family: Arial, Helvetica, sans-serif;">Es werden folgende Daten an <a
-                    style="color: lightblue;" href="https://www.simpleanalytics.com" target="_blank">Simple
-                    Analytics</a> übermittelt:
-            </p>
-            <ul style="text-align: left; font-family: Arial, Helvetica, sans-serif;">
-                <li>Verwendeter Browser</li>
-                <li>Gerätetyp (Smartphone oder Desktop)</li>
-                <li>Herkunftsland</li>
-            </ul>
             <p style="font-family: Arial, Helvetica, sans-serif;">Es werden folgende Daten von <a
-                    style="color: lightblue;" href="https://firebase.google.com" target="_blank">Firebase (Google)</a>
+                    style="color: lightblue;" href="https://supabase.com" target="_blank">Supabase</a>
                 geladen:
             </p>
             <ul style="text-align: left; font-family: Arial, Helvetica, sans-serif;">
@@ -468,16 +458,6 @@
             <p>Es werden nur hier genannte Daten an Dritte übermittelt. Alle anderen Daten bleiben Lokal auf deinem
                 Gerät</p>
         </div>
-        <a style="width: 210px; height: 50px; display: block;"
-            href="https://dashboard.simpleanalytics.com/?utm_source=solutions-dashboard-7.netlify.app&utm_content=badge&affiliate=defeb"
-            referrerpolicy="origin" target="_blank">
-            <picture style="width: 210px; height: 50px; display: block;">
-                <source srcset="https://simpleanalyticsbadges.com/solutions-dashboard-7.netlify.app?mode=dark"
-                    media="(prefers-color-scheme: dark)" />
-                <img src="https://simpleanalyticsbadges.com/solutions-dashboard-7.netlify.app?mode=light" loading="lazy"
-                    referrerpolicy="no-referrer" crossorigin="anonymous" alt="Simple Analytics Badge" />
-            </picture>
-        </a>
         <div class="offer"
             style="margin-bottom: 20px; width: 50%; justify-content: center; display: flex; flex-direction: column; align-items: center;">
             <h1 style="margin: 0;"><u>Datenspeicherung (gemäß TTDSG & DSGVO, gemäß DSGVO Art. 12 ff.)</u></h1>
@@ -546,9 +526,7 @@
         <div style="width: 100%; text-align: center; max-width: 900px; margin:auto;">
             <h1 style="margin-bottom: 20px;font-size: 1.5em;">⚠️ Wichtiger Hinweis</h1>
             <p style="font-size:1em; margin-bottom: 30px; width: 100%;">Diese Website ist archiviert. Das Backend
-                ist abgeschaltet und nicht mehr funktionsfähig, es werden keine neuen Lösungen mehr angezeigt. <br><br>
-                Diese Änderung betrifft alle Fächer und Bereiche außer Latein Vokabeln, Games Website & Geräte
-                Informationen.</p>
+                ist abgeschaltet und nicht mehr funktionsfähig, es werden keine neuen Lösungen mehr angezeigt.</p>
             <button id="hinweis-verstanden"
                 style="font-size: 1em; padding: 10px 30px; border-radius: 20px; border: none; background: #4caf50; color: white; cursor: pointer;">Verstanden</button>
         </div>
@@ -557,33 +535,6 @@
     <script type="module" src="Files/Scripts/Module/1.js"></script>
     <script src="Files/Default/main.js"></script>
     <script>
-        const auszublendendeIDs = [
-            "english",
-            "access-all",
-            "access-others",
-            "maths",
-            "access-all-maths",
-            "access-others-maths",
-            "german",
-            "access-german",
-            "homeworks",
-            "access-homework-english",
-            "access-homework-maths",
-            "access-homework-german",
-            "info-text",
-            "access-info",
-            "german-setting",
-            "maths-setting",
-            "english-setting",
-            "info-setting"
-        ];
-
-        auszublendendeIDs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.style.display = "none";
-        });
-
-
         document.addEventListener('DOMContentLoaded', function () {
             let user = null;
             try {

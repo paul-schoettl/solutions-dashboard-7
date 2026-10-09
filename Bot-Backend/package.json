@@ -1,0 +1,30 @@
+{
+  "name": "bot-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend für Hausaufgaben-Daten mit Express und Firebase",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "express",
+    "firebase",
+    "backend",
+    "hausaufgaben",
+    "render"
+  ],
+  "author": "Paul",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.52.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "firebase": "^11.9.1"
+  }
+}

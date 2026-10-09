@@ -123,14 +123,12 @@
 </head>
 
 <body>
-    <div id="hinweis-overlay" style="display:flex; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.95); color:white; z-index:9999999; align-items:center; justify-content:center; flex-direction:column; font-size:2em;">
-        <div style="width: 100%; text-align: center; max-width: 900px; margin:auto;">
-            <h1 style="margin-bottom: 20px;font-size: 1.5em;">⚠️ Wichtiger Hinweis</h1>
-            <p style="font-size:1em; margin-bottom: 30px; width: 100%;">Ab sofort werden auf diesem Website keine Lösungen mehr angezeigt. <br><br> Diese Änderung betrifft alle Fächer und Bereiche außer Latein Vokabeln, Games Website & Geräte Informationen.</p>
-            <a style="background-color: gray; padding: 10px 20px; border-radius: 20px; color: blue;" href="https://solutions-dashboard-7.netlify.app">Zurück</a>
-        </div>
+    <div id="archiv-banner"
+        style="background:#7c2d12; color:#fff; padding:14px 20px; text-align:center; font-family:'Franklin Gothic Medium','Arial Narrow',Arial,sans-serif; font-size:1.05em; line-height:1.5; border-bottom:3px solid #f59e0b;">
+        <strong>⚠️ Diese Website ist archiviert.</strong> Das Backend ist abgeschaltet und nicht mehr
+        funktionsfähig &mdash; es werden keine neuen Hausaufgaben oder Lösungen mehr geladen. Die Seiten bleiben
+        nur noch als Archiv erreichbar.
     </div>
-    <button onclick="window.location = 'https://solutions-dashboard-7.netlify.app'" style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; cursor: pointer; background: none; border: none;"><img style="position: fixed; width: 10%; left: 1%; top: 1%; height: auto; aspect-ratio:unset; border: none; box-shadow: none;" src="arrow-left.png" alt=""></button>
     <div id="loadingOverlay" style="display: none;">
         <div class="spinner"></div>
     </div>
@@ -157,7 +155,7 @@
 
     <script>
         function tohomework() {
-            window.location.href = "../english/index.html";
+            window.location.href = "../../english/index.html#Archiv";
         }
 
         const totalPages = 77;
@@ -171,7 +169,7 @@
                 const pageToPreload = currentPage + i;
                 if (pageToPreload > 0 && pageToPreload <= totalPages) {
                     const img = new Image();
-                    img.src = `pictures/${pageToPreload}.JPG`;
+                    img.src = `pictures/${pageToPreload}.jpg`;
                     preloadedImages[pageToPreload] = img; // Speichere das Bild im Array
                 }
             }

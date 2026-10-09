@@ -85,48 +85,6 @@ async function update() {
     });
 }
 
-window.SendAnalyticsStep = async function (action) {
-    let user = null;
-    window.console.log(action);
-    try {
-        const userStr = window.localStorage.getItem('loggedInUser_Paluss1122_sdb');
-        if (userStr) {
-            user = JSON.parse(userStr);
-        }
-    } catch (e) {
-        console.error("Fehler beim Auslesen des Benutzernamens:", e);
-        user = null;
-    }
-
-    // Prüfe, ob die Seite nicht lokal läuft
-    const isLocal = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
-    if (!isLocal) {
-        try {
-            const { error } = await supabase.from('analytics').insert([{
-                browser: getBrowserName(),
-                device: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-                zeit: new Date().toISOString(),
-                link: window.location.href,
-                name: user && user.username ? user.username : null,
-                Action: action
-            }]);
-            if (error) {
-                await supabase.from('Fehlerberichte').insert([{
-                    userAgent: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-                    zeit: new Date().toISOString(),
-                    fehler: error.message || error
-                }]);
-            }
-        } catch (err) {
-            await supabase.from('Fehlerberichte').insert([{
-                userAgent: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-                zeit: new Date().toISOString(),
-                fehler: err.message || err
-            }]);
-        }
-    }
-}
-
 window.onload = function () {
     let user = null;
     try {
@@ -137,24 +95,6 @@ window.onload = function () {
     } catch (e) {
         console.error("Fehler beim Auslesen des Benutzernamens:", e);
         user = "Fehler beim Auslesen des Benutzernamens:" + e
-    }
-    if (!window.location.href.startsWith("http://127.0.0.1") && !window.location.href.startsWith("https://127.0.0.1")) {
-        // Analytics in Supabase speichern
-        supabase.from('analytics').insert({
-            browser: getBrowserName(),
-            device: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-            zeit: new Date().toISOString(),
-            link: window.location.href,
-            name: user && user.username ? user.username : null
-        }).then(({ error }) => {
-            if (error) {
-                supabase.from('Fehlerberichte').insert({
-                    userAgent: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-                    zeit: new Date().toISOString(),
-                    fehler: error
-                })
-            }
-        });
     }
     if (localStorage.getItem("particles_paluss1122") === "true") {
         createParticles();
@@ -293,20 +233,6 @@ window.onload = function () {
     }
 
 };
-
-// Hilfsfunktionen für Browser-Erkennung
-function getBrowserName() {
-    const userAgent = navigator.userAgent;
-
-    if (userAgent.includes('Firefox')) return 'Firefox';
-    if (userAgent.includes('Chrome')) return 'Chrome';
-    if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
-    if (userAgent.includes('Edge')) return 'Edge';
-    if (userAgent.includes('Opera')) return 'Opera';
-    if (userAgent.includes('Trident')) return 'Internet Explorer';
-
-    return 'Unknown';
-}
 
 update();
 setInterval(update, 5000);

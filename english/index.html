@@ -264,20 +264,6 @@
       <p style="width: 100%;">Grund: <span id="why-ws"></span></p>
     </div>
   </div>
-  <div id="nameOverlay"
-    style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:2000; justify-content:center; align-items:center;">
-    <div
-      style="background:white; border-radius:20px; padding:30px; max-width:350px; text-align:center; box-shadow:0 0 20px #000;">
-      <h2>Möchtest du deinen Vornamen angeben?</h2>
-      <input id="userNameInput" type="text" placeholder="Dein Name (optional)"
-        style="margin:10px 0; width:90%; padding:8px; border-radius:8px; border:1px solid #ccc;" />
-      <div style="margin-top:20px;">
-        <button id="submitNameBtn" class="normal" style="cursor: pointer;">Abschließen</button>
-        <button id="noThanksBtn" class="normal" style="margin-left:10px; cursor: pointer;">Nein, danke</button>
-      </div>
-      <p style="font-size:12px; color:#888; margin-top:10px;">Dein Name wird nur für Statistik-Zwecke gespeichert.</p>
-    </div>
-  </div>
   <div id="loadingOverlay" style="display: none">
     <div class="spinner"></div>
   </div>
@@ -365,65 +351,8 @@
     window.saveNotificationPreference = async function () {
       document.getElementById('notify-status').innerText = "Benachrichtigungen sind abgeschaltet.";
       return
-      if (localStorage.getItem('notifyPref') == document.querySelector('input[name="notif-setting"]:checked').value) {
-        document.getElementById('notify-status').innerText = "Einstellungen übernommen!";
-        setTimeout(() => {
-          document.getElementById('notify-status').innerText = " ";
-        }, 3000);
-        return
-      }
-      const pref = document.querySelector('input[name="notif-setting"]:checked').value;
-      localStorage.setItem('notifyPref', pref);
-
-      if (pref === "never") {
-        document.getElementById('notify-status').innerText = "Benachrichtigungen deaktiviert.";
-        emailjs.send("service_kulm5f9", "template_ynnizjt", {
-          token: localStorage.getItem('notifyPref'),
-          pref: pref,
-          website: "Englisch"
-        })
-          .then(function (response) {
-            document.getElementById('notify-status').innerText = "Erfolg, wird innerhalb der nächsten 24h funktionieren!";
-          }, function (error) {
-            document.getElementById('notify-status').innerText = "Fehler beim E-Mail-Versand.";
-          });
-        return;
-      }
-
-      try {
-        let token;
-        let registration;
-        try {
-          registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-        } catch (err) {
-          document.getElementById('notify-status').innerText = "Service Worker konnte nicht registriert werden. Bitte lade die Seite neu oder prüfe die Browser-Einstellungen.";
-          return;
-        }
-        try {
-          token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
-        } catch (err) {
-          document.getElementById('notify-status').innerText = "Fehler beim Abrufen des Benachrichtigungstokens. Bitte erlaube Benachrichtigungen im Browser.";
-          return;
-        }
-        if (!token) {
-          document.getElementById('notify-status').innerText = "Konnte kein Benachrichtigungstoken erhalten. Bitte erlaube Benachrichtigungen im Browser.";
-          return;
-        }
-        localStorage.setItem('token', token);
-        emailjs.send("service_kulm5f9", "template_ynnizjt", {
-          token: token,
-          pref: pref,
-          website: "Englisch"
-        })
-          .then(function (response) {
-            document.getElementById('notify-status').innerText = "Erfolg, wird innerhalb der nächsten 24h funktionieren!";
-          }, function (error) {
-            document.getElementById('notify-status').innerText = "Fehler beim E-Mail-Versand.";
-          });
-      } catch (err) {
-        document.getElementById('notify-status').innerText = "Fehler beim Aktivieren der Benachrichtigungen.";
-      }
     }
+
 
     // Notification-Settings Logik mit Radios
     function saveNotificationPreference() {
@@ -473,6 +402,8 @@
 
     loadImages()
 
+    let errorReported = false;
+    let updateTimer = null;
     window.update = async function () {
       const dateElem = document.getElementById("date");
       const homeworkElem = document.getElementById("homework");
@@ -480,23 +411,43 @@
       dateElem.innerText = "Wird geladen...";
       homeworkElem.innerText = "Wird geladen...";
 
-      const { data, error } = await supabase
-        .from('Hausaufgaben')
-        .select('*')
-        .eq('id', 'general')
-        .single();
-
-      if (error || !data) {
-        homeworkElem.innerText = "Daten nicht gefunden! Fehler wurde automatisiert gemeldet!";
-        dateElem.innerText = "-";
-        // Fehlerbericht in Supabase speichern
-        await supabase.from('Fehlerberichte').insert([{
-          typ: 'Dokument nicht gefunden',
-          ort: 'Hausaufgaben/hausaufgaben',
-          zeit: new Date().toISOString(),
-          userAgent: navigator.userAgent
-        }]);
-        return;
+      let data = null;
+      try {
+        data = (await supabase
+          .from('Hausaufgaben')
+          .select('*')
+          .eq('id', 'general')
+          .single()).data;
+        if (!data) throw new Error('Keine Daten');
+      } catch (err) {
+        // ein zweiter Versuch
+        try {
+          data = (await supabase
+            .from('Hausaufgaben')
+            .select('*')
+            .eq('id', 'general')
+            .single()).data;
+          if (!data) throw new Error('Keine Daten');
+        } catch (err2) {
+          homeworkElem.innerText = "Daten konnten nicht geladen werden. Bitte versuche es später erneut.";
+          dateElem.innerText = "-";
+          if (!errorReported) {
+            errorReported = true;
+            try {
+              await supabase.from('Fehlerberichte').insert([{
+                typ: 'Dokument nicht gefunden',
+                ort: 'Hausaufgaben/hausaufgaben',
+                zeit: new Date().toISOString(),
+                userAgent: navigator.userAgent
+              }]);
+            } catch (e) { }
+          }
+          if (updateTimer) {
+            clearInterval(updateTimer);
+            updateTimer = null;
+          }
+          return;
+        }
       }
 
       homeworkElem.innerText = data.Englisch;
@@ -516,43 +467,6 @@
       }
     }
 
-    function getBrowserName() {
-      const userAgent = navigator.userAgent;
-
-      if (userAgent.includes('Firefox')) return 'Firefox';
-      if (userAgent.includes('Chrome')) return 'Chrome';
-      if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) return 'Safari';
-      if (userAgent.includes('Edge')) return 'Edge';
-      if (userAgent.includes('Opera')) return 'Opera';
-      if (userAgent.includes('Trident')) return 'Internet Explorer';
-
-      return 'Unknown';
-    }
-    window.getBrowserName = getBrowserName; // <-- Fix: Attach to window
-
-    function getBrowserVersion() {
-      const userAgent = navigator.userAgent;
-      let match;
-
-      // Chrome
-      if ((match = userAgent.match(/Chrome\/(\d+)/))) {
-        return match[1];
-      }
-      // Firefox
-      if ((match = userAgent.match(/Firefox\/(\d+)/))) {
-        return match[1];
-      }
-      // Safari
-      if ((match = userAgent.match(/Version\/(\d+).*Safari/))) {
-        return match[1];
-      }
-      // Edge
-      if ((match = userAgent.match(/Edge\/(\d+)/))) {
-        return match[1];
-      }
-
-      return 'Unknown';
-    }
 
     document.addEventListener("DOMContentLoaded", () => {
       const dateElem = document.getElementById("date");
@@ -561,80 +475,8 @@
       dateElem.innerText = "Wird geladen...";
       homeworkElem.innerText = "Wird geladen...";
 
-      const nameOverlay = document.getElementById('nameOverlay');
-      const userNameInput = document.getElementById('userNameInput');
-      const submitNameBtn = document.getElementById('submitNameBtn');
-      const noThanksBtn = document.getElementById('noThanksBtn');
-
-      const NAME_KEY = 'analyticsUserName';
-      const NAME_DECLINED_KEY = 'analyticsUserNameDeclined';
-
-      function showNameOverlay() {
-        nameOverlay.style.display = 'flex';
-      }
-      function hideNameOverlay() {
-        nameOverlay.style.display = 'none';
-      }
-
-      // Prüfe, ob ein Name im URL-Hash steht
-      const hashName = decodeURIComponent(window.location.hash.replace(/^#/, '').trim());
-      if (hashName) {
-        localStorage.setItem(NAME_KEY, hashName);
-        nameOverlay.style.display = 'none';
-        sendAnalytics(hashName);
-      } else {
-        // Prüfen ob Name oder Ablehnung im localStorage
-        const storedName = localStorage.getItem(NAME_KEY);
-        const declined = localStorage.getItem(NAME_DECLINED_KEY);
-        if (!storedName && !declined) {
-          // Frame anzeigen, wenn noch keine Entscheidung getroffen wurde
-          showNameOverlay();
-        }
-      }
-
-      submitNameBtn.onclick = function () {
-        const name = userNameInput.value.trim();
-        if (name) {
-          localStorage.setItem(NAME_KEY, name);
-        }
-        hideNameOverlay();
-        sendAnalytics(name || null);
-      };
-
-      noThanksBtn.onclick = function () {
-        localStorage.setItem(NAME_DECLINED_KEY, '1');
-        hideNameOverlay();
-        sendAnalytics(null);
-      };
-
-      // Analytics nur senden, wenn Name/Entscheidung getroffen wurde
-      function sendAnalytics(name) {
-        const getBrowserName = window.getBrowserName || (() => 'Unknown');
-        if (
-          !window.location.href.startsWith("http://127.0.0.1") &&
-          !window.location.href.startsWith("https://127.0.0.1") &&
-          !(typeof name === "string" && name.toLowerCase() === "paul")
-        ) {
-          supabase.from('analytics').insert({
-            browser: getBrowserName(),
-            device: (navigator.userAgentData && navigator.userAgentData.platform) || navigator.userAgent,
-            zeit: new Date().toISOString(),
-            link: window.location.href,
-            name: name
-          })
-        }
-      }
-
-      window.addEventListener('DOMContentLoaded', () => {
-        const storedName = localStorage.getItem(NAME_KEY);
-        const declined = localStorage.getItem(NAME_DECLINED_KEY);
-        if (storedName || declined) {
-          sendAnalytics(storedName || null);
-        }
-      });
-
       update();
-      setInterval(update, 5000);
+      updateTimer = setInterval(update, 5000);
     })
   </script>
 

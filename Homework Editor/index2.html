@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bildergalerie & Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #181818;
+            color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 32px;
+            color: #fff;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 32px;
+            margin: 32px auto;
+            max-width: 1200px;
+        }
+
+        .category-section {
+            background: #232323;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
+            padding: 24px 20px 20px 20px;
+            min-width: 340px;
+            max-width: 380px;
+            flex: 1 1 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .category-title {
+            font-size: 1.4em;
+            margin-bottom: 12px;
+            color: #ffd700;
+            letter-spacing: 1px;
+        }
+
+        .image-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-container img {
+            width: 400px;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.12);
+            display: block;
+        }
+
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 15px;
+            cursor: pointer;
+            z-index: 2;
+            transition: background 0.2s;
+        }
+
+        .image-container:hover .delete-btn {
+            display: block;
+        }
+
+        .no-images {
+            color: #aaa;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            width: 100%;
+        }
+
+        .upload-label {
+            background: #0057e7;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+            border: none;
+            margin-bottom: 0;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .upload-label:hover {
+            background: #003eaa;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .status {
+            font-size: 0.98em;
+            color: #ffd700;
+            min-height: 18px;
+            margin-top: 2px;
+            margin-bottom: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bildergalerie & Upload</h1>
+    <div class="categories" id="categories"></div>
+    <script type="module">
+        import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+        const supabaseUrl = 'https://xmyszcahhvgcrwjyqdsq.supabase.co';
+        let supabaseKey // NICHT EXISITIEREND
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const bucket = 'bilder';
+        const categories = ["Deutsch", "Englisch", "Mathe"];
+
+        const categoriesDiv = document.getElementById('categories');
+
+        function createCategorySection(category) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            section.id = `section-${category}`;
+
+            const title = document.createElement('div');
+            title.className = 'category-title';
+            title.textContent = category;
+            section.appendChild(title);
+
+            const imagesDiv = document.createElement('div');
+            imagesDiv.className = 'image-row';
+            imagesDiv.id = `images-${category}`;
+            section.appendChild(imagesDiv);
+
+            const noImages = document.createElement('div');
+            noImages.className = 'no-images';
+            noImages.id = `no-images-${category}`;
+            noImages.style.display = 'none';
+            noImages.textContent = 'Keine Bilder vorhanden.';
+            section.appendChild(noImages);
+
+            // Upload-Formular
+            const uploadForm = document.createElement('form');
+            uploadForm.className = 'upload-form';
+            uploadForm.enctype = 'multipart/form-data';
+            uploadForm.onsubmit = (e) => { e.preventDefault(); };
+
+            const uploadLabel = document.createElement('label');
+            uploadLabel.className = 'upload-label';
+            uploadLabel.textContent = 'Bilder hochladen';
+            uploadLabel.htmlFor = `upload-input-${category}`;
+
+            const uploadInput = document.createElement('input');
+            uploadInput.type = 'file';
+            uploadInput.accept = 'image/*';
+            uploadInput.multiple = true;
+            uploadInput.className = 'upload-input';
+            uploadInput.id = `upload-input-${category}`;
+
+            uploadLabel.appendChild(uploadInput);
+            uploadForm.appendChild(uploadLabel);
+
+            // --- Button für Zwischenablage-Upload ---
+            const clipboardBtn = document.createElement('button');
+            clipboardBtn.type = 'button';
+            clipboardBtn.className = 'upload-label';
+            clipboardBtn.style.marginTop = '0';
+            clipboardBtn.style.marginBottom = '0';
+            clipboardBtn.textContent = 'Bild aus Zwischenablage hochladen';
+            uploadForm.appendChild(clipboardBtn);
+
+            const statusDiv = document.createElement('div');
+            statusDiv.className = 'status';
+            statusDiv.id = `status-${category}`;
+            uploadForm.appendChild(statusDiv);
+
+            uploadInput.addEventListener('change', async (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+                statusDiv.textContent = 'Bilder werden hochgeladen...';
+                uploadLabel.style.pointerEvents = 'none';
+                uploadLabel.style.opacity = '0.7';
+                clipboardBtn.disabled = true;
+                let uploadedCount = 0;
+                for (const file of files) {
+                    const { error } = await supabase.storage.from(bucket).upload(`${category}/${file.name}`, file, { upsert: true });
+                    if (!error) uploadedCount++;
+                }
+                if (uploadedCount > 0) {
+                    statusDiv.textContent = `${uploadedCount} Bild(er) erfolgreich hochgeladen!`;
+                } else {
+                    statusDiv.textContent = 'Fehler beim Hochladen.';
+                }
+                uploadLabel.style.pointerEvents = '';
+                uploadLabel.style.opacity = '';
+                clipboardBtn.disabled = false;
+                uploadInput.value = '';
+                await loadImagesForCategory(category);
+            });
+
+            // --- Event für Zwischenablage-Button ---
+            clipboardBtn.addEventListener('click', async () => {
+                statusDiv.textContent = '';
+                clipboardBtn.disabled = true;
+                uploadLabel.style.pointerEvents = 'none';
+                uploadLabel.style.opacity = '0.7';
+                try {
+                    const clipboardItems = await navigator.clipboard.read();
+                    let foundImage = false;
+                    for (const item of clipboardItems) {
+                        for (const type of item.types) {
+                            if (type.startsWith('image/')) {
+                                foundImage = true;
+                                const blob = await item.getType(type);
+                                const fileName = `clipboard_${Date.now()}.${type.split('/')[1]}`;
+                                const { error } = await supabase.storage.from(bucket).upload(`${category}/${fileName}`, blob, { upsert: true });
+                                if (error) {
+                                    statusDiv.textContent = 'Fehler beim Hochladen: ' + error.message;
+                                } else {
+                                    statusDiv.textContent = 'Bild aus Zwischenablage erfolgreich hochgeladen!';
+                                    await loadImagesForCategory(category);
+                                }
+                                break;
+                            }
+                        }
+                        if (foundImage) break;
+                    }
+                    if (!foundImage) {
+                        statusDiv.textContent = 'Keine Bilddaten in der Zwischenablage gefunden.';
+                    }
+                } catch (err) {
+                    statusDiv.textContent = 'Fehler beim Zugriff auf die Zwischenablage.';
+                }
+                clipboardBtn.disabled = false;
+                uploadLabel.style.pointerEvents = '';
+                uploadLabel.style.opacity = '';
+            });
+
+            section.appendChild(uploadForm);
+            return section;
+        }
+
+        async function loadImagesForCategory(category) {
+            const imagesDiv = document.getElementById(`images-${category}`);
+            const noImages = document.getElementById(`no-images-${category}`);
+            imagesDiv.innerHTML = '';
+            noImages.style.display = 'none';
+            const { data: files, error } = await supabase.storage.from(bucket).list(category, {
+                limit: 100,
+                offset: 0,
+                sortBy: { column: 'name', order: 'asc' }
+            });
+            if (error || !files) {
+                noImages.textContent = 'Fehler beim Laden der Bilder.';
+                noImages.style.display = 'block';
+                return;
+            }
+            const imageFiles = files.filter(file => /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(file.name));
+            if (imageFiles.length === 0) {
+                noImages.textContent = 'Keine Bilder vorhanden.';
+                noImages.style.display = 'block';
+                return;
+            }
+            for (const file of imageFiles) {
+                const publicUrl = `${supabaseUrl}/storage/v1/object/public/${bucket}/${category}/${file.name}`;
+                const container = document.createElement('div');
+                container.className = 'image-container';
+                const img = document.createElement('img');
+                img.src = publicUrl;
+                img.alt = file.name;
+                const btn = document.createElement('button');
+                btn.className = 'delete-btn';
+                btn.title = 'Bild löschen';
+                btn.innerHTML = '🗑️';
+                btn.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    if (!confirm(`Willst du das Bild "${file.name}" wirklich löschen?`)) return;
+                    btn.disabled = true;
+                    btn.innerHTML = '...';
+                    const { error } = await supabase.storage.from(bucket).remove([`${category}/${file.name}`]);
+                    if (error) {
+                        alert('Fehler beim Löschen: ' + error.message);
+                        btn.disabled = false;
+                        btn.innerHTML = '🗑️';
+                    } else {
+                        container.remove();
+                        await loadImagesForCategory(category);
+                    }
+                });
+                container.appendChild(img);
+                container.appendChild(btn);
+                imagesDiv.appendChild(container);
+            }
+        }
+
+        // Initialisierung
+        for (const category of categories) {
+            const section = createCategorySection(category);
+            categoriesDiv.appendChild(section);
+            loadImagesForCategory(category);
+        }
+    </script>
+</body>
+
+</html>

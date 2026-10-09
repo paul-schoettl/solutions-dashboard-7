@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hausaufgaben-Editor</title>
+    <script type="module">
+        import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+        const supabaseUrl = "https://xmyszcahhvgcrwjyqdsq.supabase.co";
+        let supabaseKey // NICHT EXISITIEREND
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        window.loadData = async function () {
+            // Hausaufgaben laden
+            const { data: hausaufgaben, error: err1 } = await supabase
+                .from("Hausaufgaben")
+                .select("*")
+                .eq("id", "general")
+                .single();
+            if (hausaufgaben) {
+                document.getElementById("de").value = hausaufgaben.Deutsch || "";
+                document.getElementById("deti").value = hausaufgaben.DeutschDatum || "";
+                document.getElementById("en").value = hausaufgaben.Englisch || "";
+                document.getElementById("enti").value = hausaufgaben.EnglischDatum || "";
+                document.getElementById("ma").value = hausaufgaben.Mathe || "";
+                document.getElementById("mati").value = hausaufgaben.MatheDatum || "";
+                document.getElementById("la").value = hausaufgaben.Latein || "";
+            }
+            // General laden
+            const { data: general, error: err2 } = await supabase
+                .from("general")
+                .select("*")
+                .eq("id", "general")
+                .single();
+            if (general) {
+                document.getElementById("ve").value = general.Version || "";
+                document.getElementById("wa").checked = general.Wartungsarbeiten || false;
+                document.getElementById("wati").value = general.WartungsarbeitenZeit || "";
+                document.getElementById("wawh").value = general.Grund || "";
+                document.getElementById("fi").checked = general.Ende
+            }
+        };
+
+        window.saveData = async function () {
+            // Hausaufgaben speichern
+            const data = {
+                id: "general",
+                Deutsch: document.getElementById("de").value,
+                DeutschDatum: document.getElementById("deti").value,
+                Englisch: document.getElementById("en").value,
+                EnglischDatum: document.getElementById("enti").value,
+                Mathe: document.getElementById("ma").value,
+                MatheDatum: document.getElementById("mati").value,
+                Latein: document.getElementById("la").value
+            };
+            await supabase.from("Hausaufgaben").upsert([data], { onConflict: ["id"] });
+            // General speichern
+            const data2 = {
+                id: "general",
+                Version: document.getElementById("ve").value,
+                Wartungsarbeiten: document.getElementById("wa").checked,
+                WartungsarbeitenZeit: document.getElementById("wati").value,
+                Grund: document.getElementById("wawh").value,
+                Ende: document.getElementById("fi").checked
+            };
+            await supabase.from("general").upsert([data2], { onConflict: ["id"] });
+            loadData();
+        };
+
+        window.addEventListener("DOMContentLoaded", loadData);
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 1rem;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.25rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #eee;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+
+        .underdiv {
+            display: flex;
+            width: 100%;
+            align-items: center;
+        }
+
+        .underdiv input[type="text"] {
+            width: 45%;
+        }
+
+        .underdiv button {
+            margin-top: 0;
+            height: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <a style="color: red;" href="analytics.html">Analytics</a>
+    <a style="color: red;" href="index2.html">Bilder</a>
+    <div class="container">
+        <h2>📘 Hausaufgaben bearbeiten</h2>
+        <label for="de">Deutsch</label>
+        <div class="underdiv">
+            <input id="de" type="text" />
+            <input id="deti" type="text" />
+            <button type="button" onclick="setzeHeutigesDatum('deti')" style="margin-left:5px;">Heute</button>
+            <button type="button" onclick="nichts('de')" style="margin-left:5px;">NICHTS!</button>
+        </div>
+
+        <label for="en">Englisch</label>
+        <div class="underdiv">
+            <input id="en" type="text" />
+            <input id="enti" type="text" />
+            <button type="button" onclick="setzeHeutigesDatum('enti')" style="margin-left:5px;">Heute</button>
+            <button type="button" onclick="nichts('en')" style="margin-left:5px;">NICHTS!</button>
+        </div>
+
+        <label for="ma">Mathe</label>
+        <div class="underdiv">
+            <input id="ma" type="text" />
+            <input id="mati" type="text" />
+            <button type="button" onclick="setzeHeutigesDatum('mati')" style="margin-left:5px;">Heute</button>
+            <button type="button" onclick="nichts('ma')" style="margin-left:5px;">NICHTS!</button>
+        </div>
+
+        <label for="la">Latein</label>
+        <input id="la" type="text" />
+
+        <h2>Generelles</h2>
+        <label for="ve">Version</label>
+        <input id="ve" type="text" />
+
+        <label for="wa">Wartungsarbeiten</label>
+        <input id="wa" type="checkbox" style="width: 50px; margin-top: 20px;" />
+
+        <label for="fi">Ende</label>
+        <input id="fi" type="checkbox" style="width: 50px; margin-top: 20px;" />
+
+        <label for="wati">Wartungsarbeiten Dauer</label>
+        <input id="wati" type="text" />
+
+        <label for="wawh">Wartungsarbeiten Grund</label>
+        <input id="wawh" type="text" />
+
+        <br>
+
+        <button onclick="saveData()">Speichern</button>
+        <button onclick="loadData()">Aktualisieren</button>
+    </div>
+
+    <script>
+        function setzeHeutigesDatum (id) {
+            const heute = new Date();
+            const tag = heute.getDate();
+            const monat = heute.getMonth() + 1;
+            const jahr = String(heute.getFullYear()).slice(-2);
+            const datum = `${tag}.${monat}.${jahr}`;
+            document.getElementById(id).value = datum;
+        };
+
+        function nichts (id) {
+            const id1 = document.getElementById(id);
+            id1.value = "NICHTS!";
+        }
+    </script>
+</body>
+
+</html>
